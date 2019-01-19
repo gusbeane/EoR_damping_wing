@@ -1,0 +1,93 @@
+% this is a LaTeX lol file
+%----------------------------------------------------------------------
+% name:
+%   hogg_cv.tex
+% purpose:
+%   Hogg's CV and list of publications
+% to-do:
+%   - Convert all \ads{} to \doi{} -- the DOIs should exist now.
+%   - Is the ``what constrains'' paper published anywhere?
+%   - Should I make an \acronym{} macro that uses \small?  I should.
+% comments:
+%   - Don't list full author lists of 10 or more.
+%   - If you want to include/remove the date, see \renewcommand{\today}.
+%   - Swap 1/0 flag to include invited talks.
+%----------------------------------------------------------------------
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage{cleanTeX}
+\usepackage{pagecolor}
+\usepackage{multicol}
+
+\usepackage{natbib}
+\bibliographystyle{apj}
+
+\usepackage{xstring}
+
+% put in the date -- or not
+%  \renewcommand{\today}{2018 October 20}
+
+% define colors
+
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{bm}
+
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+
+\fancypagestyle{firstpage}{%
+  % \lhead{\deemph{\texttt{cleanTeX v0.1}}}
+}
+
+\begin{document}
+\thispagestyle{firstpage}%\sloppy\sloppypar\raggedbottom%\frenchspacing
+\ifdefined\dark
+    \pagecolor{bggrey}
+    \color{white}
+\fi
+
+\def\parskipdefault{\parskip}
+\setlength{\parskip}{1.2ex}
+
+\def\parindentdefault{\parindent}
+\setlength{\parindent}{0pt}
+
+\textbf{The Damping Wing in $z\sim5-6$ Quasars}
+
+Angus Beane and Adam Lidz
+
+\texttt{abeane@sas.upenn.edu}
+
+\deemph{\today}
+
+\section{Background}
+The Epoch of Reionization (EoR) is the final phase transition of the universe
+as the diffuse, neutral intergalactic medium (IGM) is ionized by the first
+generation of galaxies. Observations of this era are limited. The main
+constraints on the timing of the EoR come from measurements of the optical
+depth from the cosmic microwave background (CMB). Recent measurements place
+$\tau \sim 0.05$, which corresponds to a reionization midpoint of $z_r \sim
+7.5$, depending on the exact ionization history used
+\citep{2018arXiv180706209P}. Since the form of the ionization history is not
+known, this allows for various reionization scenarios, but most plausible
+scenarios place the end of reionization to be prior to $z\sim6$.
+
+In a related problem, the Ly$\alpha$ optical depth of individual quasars is
+known to show a large degree of spatial fluctuation, signficantly larger than
+expected from density fluctuations alone \citep[e.g.][]{2015PASA...32...45B}.
+Typical explanations for this problem either make use of a fluctuating UV
+background \citep{2017MNRAS.465.3429C} or
+
+Our project will attempt to either measure or place an upper limit on the bulk
+neutral fraction at $z<6$. Since the optical depth for the Ly$\alpha$
+transmission is high, a neutral fraction of only $\sim10^{-4}$ is necessary to
+completely block transmission. Therefore, it is impossible to naively identify
+a region with no Ly$\alpha$ transmission as being caused by a neutral hydrogen
+cloud or a region of slight residual netural fraction.
+
+We will attempt 
+
+\bibliography{references}
+
+\end{document}

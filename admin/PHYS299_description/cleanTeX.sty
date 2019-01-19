@@ -1,0 +1,134 @@
+\usepackage{aas_macros}
+\usepackage{fancyhdr, afterpage}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{ifthen}
+\usepackage{xcolor}
+
+\definecolor{bggrey}{HTML}{24292e}
+
+% hypertex insanity
+  \ifdefined\dark
+    \definecolor{grey}{rgb}{0.703125,0.703125,0.703125}
+    \definecolor{linkcolor}{rgb}{1.0, 0.59765625, 0}
+  \else
+    \definecolor{grey}{rgb}{0.5,0.5,0.5}
+    \definecolor{linkcolor}{RGB}{3,102,214}
+  \fi
+  \hypersetup{
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=grey,         % color of internal links
+    citecolor=linkcolor,    % color of links to bibliography
+    filecolor=black,        % color of file links
+    urlcolor=linkcolor      % color of external links
+  }
+
+% repeated text formatting
+  \newcommand{\latin}[1]{\textsl{#1}}
+  \newcommand{\etal}{\latin{et~al.}}
+  \newcommand{\satellite}[1]{\textsl{#1}}
+  \newcommand{\project}[1]{\textsl{#1}}
+  \newcommand{\usd}[1]{{#1}\,\textsc{usd}}
+  \newcommand{\eur}[1]{{#1}\,\textsc{eur}}
+  \newcommand{\grantnumber}[2]{{\footnotesize{#1}}; #2,~\textsc{pi}}
+% literature links--use doi if you can
+  \newcommand{\doi}[2]{\href{http://dx.doi.org/#1}{{#2}}}
+  \newcommand{\ads}[2]{\href{http://adsabs.harvard.edu/abs/#1}{{#2}}}
+  \newcommand{\isbn}[1]{{\footnotesize(\textsc{isbn:}{#1})}}
+  \newcommand{\arxiv}[2]{\href{http://arxiv.org/abs/#1}{{#2}\ (\texttt{arXiv:#1})}}
+% define de-emphasize commands
+  \newcommand{\deemph}[1]{\textcolor{grey}{\footnotesize{#1}}}
+  \newcommand{\pubnumber}[1]{\deemph{{#1}.}}
+% define heading command SERIOUS HACKING HERE
+  \newcommand{\hoggheading}[1]{\addvspace{1ex}\pagebreak[3]%
+    \par\textbf{#1}\nopagebreak%
+    \afterpage{\markboth{Beane et al.: \textbf{#1}}{}}%
+    \nopagebreak\\*[0.5ex]\nopagebreak}%
+% custom list characteristics
+  \newcounter{refpubnum}
+  \newcommand{\hogglist}{%
+    \rightmargin=0in
+    \leftmargin=0.18in
+    \topsep=0ex
+    \partopsep=0pt
+    \itemsep=0.2ex
+    \parsep=0pt
+    \itemindent=-1.0\leftmargin
+    \listparindent=0.0\leftmargin
+    \settowidth{\labelsep}{~}
+    \usecounter{refpubnum}
+  }
+  \newcommand{\affilist}{%
+    \rightmargin=0in
+    \leftmargin=0.18in
+    \topsep=0ex
+    \partopsep=0pt
+    \itemsep=-0.4ex
+    \parsep=0pt
+    \itemindent=-1.0\leftmargin
+    \listparindent=0.0\leftmargin
+    \settowidth{\labelsep}{~}
+    \usecounter{refpubnum}
+  }
+  \newcommand{\note}[1]{{\small\par{#1}}}
+% Margins and spaces
+  %\raggedright
+  \setlength{\oddsidemargin}{0in}
+  \setlength{\topmargin}{-0.25in}
+  \setlength{\headsep}{0.20in}
+  \setlength{\headheight}{0.25in}
+  \setlength{\textheight}{9.75in}
+%  \addtolength{\textheight}{-\headsep}
+%  \addtolength{\textheight}{-\headheight}
+  \addtolength{\topmargin}{-\headsep}
+  \addtolength{\topmargin}{-\headheight}
+  \setlength{\textwidth}{6.50in}
+  %\setlength{\parindent}{0in}
+  %\setlength{\parskip}{1ex}
+
+  %added by gus
+  % \setlength{\leftmargin}{-0.25in}
+  % \setlength{\rightmargin}{-0.25in}
+% Headings and footing
+  \renewcommand{\headrulewidth}{0pt}
+  \pagestyle{fancy}
+  \lhead{\deemph{\leftmark}}
+  \rhead{\deemph{\thepage}}
+  \cfoot{}
+% Miscellaneous
+  \renewcommand{\footnoterule}{\kern-3pt {\color{grey}\hrule width 2in} \kern 2.6pt}
+  %\renewcommand\footnoterule{{\color{gray}\hrule height 2pt}}
+  \renewcommand{\thefootnote}{\textcolor{grey}{\arabic{footnote}}}
+  \newcommand{\institution}[2]{\deemph{\href{#2}{\color{grey}{#1}}}}
+
+  % beyond hacky
+
+  %\newcommand{\kword}[1]{\def\link{http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?db_key=AST&db_key=PRE&qform=%AST&arxiv_sel=astro-ph&arxiv_sel=cond-mat&arxiv_sel=cs&arxiv_sel=gr-qc&arxiv_sel=hep-ex&arxiv_sel=hep-lat&arxiv_sel=hep-ph&arxiv_sel=hep-th&arxiv_sel=math&arxiv_sel=math-ph&arxiv_sel=nlin&arxiv_sel=nucl-ex&arxiv_sel=nucl-th&arxiv_sel=physics&arxiv_sel=quant-ph&arxiv_sel=q-bio&sim_query=YES&ned_query=YES&adsobj_query=YES&aut_logic=OR&obj_logic=OR&author=&object=&start_mon=&start_year=&end_mon=&end_year=&ttl_logic=OR&title=&txt_logic=AND&text=#1&nr_to_return=200&start_nr=1&jou_pick=ALL&ref_stems=&data_and=ALL&group_and=ALL&start_entry_day=&start_entry_mon=&start_entry_year=&end_entry_day=&end_entry_mon=&end_entry_year=&min_score=&sort=SCORE&data_type=SHORT&aut_syn=YES&ttl_syn=YES&txt_syn=YES&aut_wt=1.0&obj_wt=1.0&ttl_wt=0.3&txt_wt=3.0&aut_wgt=YES&obj_wgt=YES&ttl_wgt=YES&txt_wgt=YES&ttl_sco=YES&txt_sco=YES&version=1}
+  %\href{\link}{\color{grey}{#1}}}
+
+%\def\link{http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?db_key=AST&db_key=PRE&qform=AST&arxiv_sel=astro-ph&arxiv_sel=cond-mat&arxiv_sel=cs&arxiv_sel=gr-qc&arxiv_sel=hep-ex&arxiv_sel=hep-lat&arxiv_sel=hep-ph&arxiv_sel=hep-th&arxiv_sel=math&arxiv_sel=math-ph&arxiv_sel=nlin&arxiv_sel=nucl-ex&arxiv_sel=nucl-th&arxiv_sel=physics&arxiv_sel=quant-ph&arxiv_sel=q-bio&sim_query=YES&ned_query=YES&adsobj_query=YES&aut_logic=OR&obj_logic=OR&author=&object=&start_mon=&start_year=&end_mon=&end_year=&ttl_logic=OR&title=&txt_logic=AND&text=\StrSubstitute{#1}{ }{-}&nr_to_return=200&start_nr=1&jou_pick=ALL&ref_stems=&data_and=ALL&group_and=ALL&start_entry_day=&start_entry_mon=&start_entry_year=&end_entry_day=&end_entry_mon=&end_entry_year=&min_score=&sort=SCORE&data_type=SHORT&aut_syn=YES&ttl_syn=YES&txt_syn=YES&aut_wt=1.0&obj_wt=1.0&ttl_wt=0.3&txt_wt=3.0&aut_wgt=YES&obj_wgt=YES&ttl_wgt=YES&txt_wgt=YES&ttl_sco=YES&txt_sco=YES&version=1}
+% preamble specific to THIS PAPER
+\newcommand{\hoggsection}[2]{\addvspace{1ex}\pagebreak[3]%
+    \par\section{#1}\label{#2}\nopagebreak%
+    \afterpage{\markboth{Beane et al.: \textbf{#1}}{}}%
+    \nopagebreak}%
+
+\newcommand{\email}[1]{\def\@email#1}
+
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                {0.25ex \@plus.2ex}%
+                                {\normalfont\bfseries}}
+
+\renewcommand*{\@seccntformat}[1]{\csname the#1\endcsname\hspace{1.5ex}}
+
+% % remake title
+% \renewcommand*{\maketitle}{%
+% \begin{titlepage}
+
+% {\textbf \LARGE \@title }
+% {\@author}
+% {\texttt{\@email}}
+
+% \end{titlepage}
+% }
