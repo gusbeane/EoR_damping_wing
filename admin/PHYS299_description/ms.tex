@@ -1,19 +1,3 @@
-% this is a LaTeX lol file
-%----------------------------------------------------------------------
-% name:
-%   hogg_cv.tex
-% purpose:
-%   Hogg's CV and list of publications
-% to-do:
-%   - Convert all \ads{} to \doi{} -- the DOIs should exist now.
-%   - Is the ``what constrains'' paper published anywhere?
-%   - Should I make an \acronym{} macro that uses \small?  I should.
-% comments:
-%   - Don't list full author lists of 10 or more.
-%   - If you want to include/remove the date, see \renewcommand{\today}.
-%   - Swap 1/0 flag to include invited talks.
-%----------------------------------------------------------------------
-
 \documentclass[11pt,letterpaper]{article}
 \usepackage{cleanTeX}
 \usepackage{pagecolor}
@@ -59,7 +43,7 @@
 
 Angus Beane and Adam Lidz
 
-\texttt{abeane@sas.upenn.edu}
+% \texttt{abeane@sas.upenn.edu}
 
 \deemph{\today}
 
@@ -79,7 +63,8 @@ In a related problem, the Ly$\alpha$ optical depth of individual quasars is
 known to show a large degree of spatial fluctuation, signficantly larger than
 expected from density fluctuations alone \citep[e.g.][]{2015PASA...32...45B}.
 Typical explanations for this problem either make use of a fluctuating UV
-background \citep{2017MNRAS.465.3429C} or
+background \citep{2017MNRAS.465.3429C} or line-of-sight variation in
+temperature \citep{2015ApJ...813L..38D}.
 
 Our project will attempt to either measure or place an upper limit on the bulk
 neutral fraction at $z<6$. Since the optical depth for the Ly$\alpha$
@@ -89,14 +74,14 @@ a region with no Ly$\alpha$ transmission as being caused by a neutral hydrogen
 cloud or a region of slight residual netural fraction.
 
 \section{Description of Project}
-We will attempt to determine if certain dark gaps in $z\sim5-6$ quasar spectra
-are caused by neutral clouds of hydrogen gas instead of a residual neutral
-fraction $\gtrsim 10^{-4}$. We will be relying upon a technique developed by
+We will attempt to determine if significant neutral regions remain at $z<6$,
+which would show that the EoR is not complete by $z=6$, by studying the dark
+gaps in quasar spectra. We will be relying upon a technique developed by
 \citet{2015ApJ...799..179M} which uses the damping wing to distinguish between
-the two scenarios. Since significant absorption far from line center (i.e.
-$\Delta v \sim 300 \text{km}/\text{s}$) occurs only when the neutral fraction
-of the cloud is close to unity, one can detect a ``wing'' of transmission
-instead of a sharp recovery to mean flux
+regions of order unity and $\sim10^{-4}$ neutral fraction. Since significant
+absorption far from line center (i.e. $\Delta v \sim 300 \text{km}/\text{s}$)
+occurs only when the neutral fraction of the cloud is close to unity, one can
+detect a ``wing'' of transmission instead of a sharp recovery to mean flux
 \citep[Figure~4][]{2015ApJ...799..179M}. Such a feature cannot be detected in
 a single spectra --- however, by stacking several spectra together, we hope to
 be able to measure the damping wing feature.
