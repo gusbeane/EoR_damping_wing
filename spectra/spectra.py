@@ -4,6 +4,8 @@ import sys
 import astropy.units as u
 from astropy.table import Table
 
+import matplotlib.pyplot as plt
+
 class spec(object):
     """Spectrum class with some useful methods.
 
@@ -48,6 +50,18 @@ class spec(object):
         self.lymanseries = {'Lyalpha': 1215.67 * u.AA,
                             'Lybeta': 1025.73 * u.AA,
                             'Lygamma': 972.54 * u.AA}
+
+    def plot(self, show=True):
+        fig, ax = plt.subplots(1, 1)
+        ax.plot(self.data[:,0], self.data[:,1], lw=0.2)
+        ax.set_xlabel('wavelength [ angstrom ]')
+        ax.set_ylabel('flux')
+        if show:
+            plt.show()
+            return None
+        else:
+            return fig, ax
+
 
 if __name__ == '__main__':
     z = 5.41
