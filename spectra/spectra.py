@@ -37,10 +37,13 @@ class spec(object):
             sys.exit(-1)
 
         if continuum is not None:
+            self.has_continuum = True
             if len(continuum) != len(wavelength):
                 print('Continuum is not same shape as wavelength column')
                 sys.exit(-1)
             self.continuum = continuum
+        else:
+            self.has_continuum = False
 
         self.lymanseries = {'Lyalpha': 1215.67 * u.AA,
                             'Lybeta': 1025.73 * u.AA,
