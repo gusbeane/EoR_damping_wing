@@ -23,6 +23,8 @@ class spec(object):
             logwavelength(:obj:`bool`, optional): If wavelength column is log10(wavelength) (default: False)
         """
         try:
+            if logwavelength:
+                wavelength = np.power(10, wavelength)
             self.data = np.c_[wavelength, flux]
         except:
             print('Cant combine wavelength and flux data, make sure they have the same size')
