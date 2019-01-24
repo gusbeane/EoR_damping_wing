@@ -48,3 +48,8 @@ class spec(object):
         self.lymanseries = {'Lyalpha': 1215.67 * u.AA,
                             'Lybeta': 1025.73 * u.AA,
                             'Lygamma': 972.54 * u.AA}
+
+if __name__ == '__main__':
+    z = 5.41
+    dat = np.genfromtxt('../data/QUASAR_spec_FAN/z541.spec.tex')
+    s = spec(dat[:,0], dat[:,1], z, logwavelength=True)
