@@ -105,4 +105,6 @@ class spec(object):
 if __name__ == '__main__':
     z = 5.41
     dat = np.genfromtxt('../data/QUASAR_spec_FAN/z541.spec.tex')
-    s = spec(dat[:,0], dat[:,1], z, logwavelength=True)
+    invar = np.genfromtxt('../data/QUASAR_spec_FAN/z541.var.tex')[:,1]
+    noise = 1/np.sqrt(invar)
+    s = spec(dat[:,0], dat[:,1], noise, z, logwavelength=True)
