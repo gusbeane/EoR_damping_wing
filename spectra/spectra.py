@@ -15,12 +15,13 @@ class spec(object):
         attr2 (:obj:`int`, optional): Description of `attr2`.
 
     """
-    def __init__(self, wavelength, flux, redshift, continuum=None, logwavelength=False, cosmo=None):
+    def __init__(self, wavelength, flux, flux_noise, redshift, continuum=None, logwavelength=False, cosmo=None):
         """Initialize the spectrum object.
 
         Args:
             wavelength (:obj:`list` of :obj:`float`): Array of wavelength with astropy units
             flux (:obj:`list` of :obj:`float`): Array of flux (units unnecessary)
+            flux_noise (:obj:`list` of :obj:`float`): Array of flux noise (units unnecessary)
             redshift (:obj:`float`): Redshift of emission for the quasar
             continuum (:obj:`list` of :obj:`float`, optional): Array of continuum values (same units as flux)
             logwavelength(:obj:`bool`, optional): If wavelength column is log10(wavelength) (default: False)
@@ -29,7 +30,7 @@ class spec(object):
         try:
             if logwavelength:
                 wavelength = np.power(10, wavelength)
-            self.data = np.c_[wavelength, flux]
+            self.data = np.c_[wavelength, flux, flux_noise]
         except:
             print('Cant combine wavelength and flux data, make sure they have the same size')
             sys.exit(-1)
@@ -87,7 +88,7 @@ class spec(object):
 
         return comoving_distance
 
-    
+
 
     def plot(self, show=True):
         fig, ax = plt.subplots(1, 1)
