@@ -58,6 +58,37 @@ class spec(object):
         else:
             self.cosmo = cosmology.setCosmology('planck18')
 
+    def comoving_extent(self, wavelength_lower, wavelength_upper, lyman='Lyalpha'):
+        """Returns the comoving extent between wavelength_lower and wavelength_upper.
+
+        Args:
+            wavelength_lower (:obj:`float`): Lower wavelength (observed)
+            wavelength_upper (:obj:`float`): Upper wavelength (observed)
+            lyman (:obj:`string`, optional): Which lyman series line to use, either 'Lyalpha',
+                'Lybeta', or 'Lygamma' (default: 'Lyalpha')
+        """
+        # first convert the wavelengths into the redshift at which they equal the correct lyman line
+        z_lower = wavelength_lower / self.lymanseries[lyman] - 1
+        z_upper = wavelength_upper / self.lymanseries[lyman] - 1
+
+        # check and make sure we're good
+        if z_lower < 0 or z_upper < 0:
+            print('Ahh!!! It looks like the wavelength was never at the correct lyman line, z < 0!')
+            sys.exit(-1)
+        if z_lower > self.redshift or z_upper > self.redshift:
+            print('Ahh!!! It looks like the wavelength was never at the correct lyman line, z > zquasar!')
+            sys.exit(-1)
+        if z_lower > z_upper:
+            print('z_lower > z_upper: ', z_lower, ' > ', z_upper, ', uh oh!')
+            sys.exit(-1)
+
+        comoving_distance = self.cosmo.comovingDistance(z_lower, z_upper, transverse=False)
+        comoving_distance /= self.cosmo.h
+
+        return comoving_distance
+
+    
+
     def plot(self, show=True):
         fig, ax = plt.subplots(1, 1)
         ax.plot(self.data[:,0], self.data[:,1], lw=0.2)
