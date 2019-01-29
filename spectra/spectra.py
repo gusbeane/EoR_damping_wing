@@ -94,6 +94,12 @@ class spec(object):
         return comoving_distance
 
     def velocity_offset(self, wavelength_lower, wavelength_upper):
+        """Compute the velocity offset between wavelength_lower and wavelength_upper.
+
+        Args:
+            wavelength_lower (:obj:`list` of :obj:`float`): lower wavelengths
+            wavelength_upper (:obj:`list` of :obj:`float`): upper wavelengths
+        """
         avg_wavelength = np.divide(np.add(wavelength_lower, wavelength_upper), 2.0)
         delta_wavelength = np.subtract(wavelength_upper, wavelength_lower)
         delta = np.divide(delta_wavelength, avg_wavelength)
