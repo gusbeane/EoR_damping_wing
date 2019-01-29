@@ -168,6 +168,57 @@ class spec(object):
 
         return None
 
+    def get_dark_gaps_extent(self, vel_extent, greater=True, alpha_only=False, beta_only=False):
+        """Returns all dark gaps with extent greater than (or less than) vel_extent.
+
+        Note that if alpha_only and beta_only are True, then an error will be raised.
+
+        Args:
+            vel_extent (:obj:`float`): velocity offset of dark gap
+            greater (:obj:`bool`, optional): All dark gaps greater than extent, False for less than (default: True)
+            alpha_only (:obj:`bool`, optional): All dark gaps must lie between lyman alpha and lyman beta
+            beta_only
+        """
+
+        wavelength = self.data[:,0]
+        wavelength_rest = np.divide(wavelength, 1.+self.redshift)
+
+        if alpha_only and beta_only:
+            raise Exception('alpha_only and beta_only cannot both be set to True')
+
+        if alpha_only:
+            w_upper = self.lymanseries['Lyalpha']
+            w_lower = self.lymanseries['Lybeta']
+        elif beta_only:
+            w_upper = self.lymanseries['Lybeta']
+            w_lower = self.lymanseries['Lygamma']
+        else:
+            w_upper = np.inf
+            w_lower = 0
+
+        wbig = np.greater(wavelength_rest, w_lower)
+        wless = np.less(wavelength_rest, w_upper)
+        keys = np.where(np.logical_and(wbig, wless))[0]
+        k_min = keys[0]
+        k_max = keys[-1]
+
+        these_gaps = []
+        for gap, wave, vel in zip(self.dark_gaps, self.dark_gaps_wavelength, self.dark_gaps_velocity_offset):
+            # check to see if we in the correct window
+            kbool = gap[0] > k_min and gap[-1] < k_max
+
+            # check to see if we match the necessary size
+            if greater:
+                vbool = vel >= vel_extent
+            else:
+                vbool = vel < vel_extent
+
+            # cool
+            if kbool and vbool:
+                these_gaps.append(gap)
+
+        return these_gaps
+
     def plot(self, show=True):
         fig, ax = plt.subplots(1, 1)
         ax.plot(self.data[:,0], self.data[:,1], lw=0.2)
@@ -186,3 +237,4 @@ if __name__ == '__main__':
     invar = np.genfromtxt('../data/QUASAR_spec_FAN/z541.var.tex')[:,1]
     noise = 1/np.sqrt(invar)
     s = spec(dat[:,0], dat[:,1], noise, z, logwavelength=True)
+    long_Lyalpha_gaps = s.get_dark_gaps_extent(500, alpha_only=True)
