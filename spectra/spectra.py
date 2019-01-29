@@ -91,6 +91,12 @@ class spec(object):
 
         return comoving_distance
 
+    def velocity_offset(self, wavelength_lower, wavelength_upper):
+        avg_wavelength = np.divide(np.add(wavelength_lower, wavelength_upper), 2.0)
+        delta_wavelength = np.subtract(wavelength_upper, wavelength_lower)
+        delta = np.divide(delta_wavelength, avg_wavelength)
+        return np.multiply(delta, self._speed_of_light_kms_)
+
 
 
     def plot(self, show=True):
