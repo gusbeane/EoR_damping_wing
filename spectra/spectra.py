@@ -52,9 +52,9 @@ class spec(object):
         else:
             self.has_continuum = False
 
-        self.lymanseries = {'Lyalpha': 1215.67 * u.AA,
-                            'Lybeta': 1025.73 * u.AA,
-                            'Lygamma': 972.54 * u.AA}
+        self.lymanseries = {'Lyalpha': 1215.67,
+                            'Lybeta': 1025.73,
+                            'Lygamma': 972.54}
 
         if cosmo is not None:
             self.cosmo = cosmo
