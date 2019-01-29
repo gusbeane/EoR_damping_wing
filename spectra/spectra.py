@@ -62,6 +62,8 @@ class spec(object):
 
         self._speed_of_light_kms_ = const.c.to_value(u.km/u.s)
 
+        self._compute_smoothed_spectra_()
+
     def comoving_extent(self, wavelength_lower, wavelength_upper, lyman='Lyalpha'):
         """Returns the comoving extent between wavelength_lower and wavelength_upper.
 
@@ -96,6 +98,30 @@ class spec(object):
         delta_wavelength = np.subtract(wavelength_upper, wavelength_lower)
         delta = np.divide(delta_wavelength, avg_wavelength)
         return np.multiply(delta, self._speed_of_light_kms_)
+
+    def _compute_smoothed_spectra_(self, width=100):
+        """Computes the smoothed spectra in bins of width km/s
+
+        Args:
+            width (:obj:`float`, optional): bin width [km/s] (default: 100)
+        """
+        wavelength = self.data[:,0]
+        flux = self.data[:,1]
+        flux_noise = self.data[:,2]
+
+        wvtensor = np.array([ wavelength for _ in range(len(wavelength)) ])
+        block = np.subtract(np.transpose(wvtensor), wavelength) # block[i][j] = wavelength[i] - wavelength[j]
+        block = np.divide(block, wavelength) # / wavelength[i]
+        lim = width / const.c.to_value(u.km/u.s)
+        limbool = np.less(np.abs(block), lim)
+        keys = [np.where(l)[0] for l in limbool]
+
+        smoothed_flux = np.array([ np.mean(flux[k]) for k in keys ])
+        smoothed_noise = np.array([ np.sum(np.square(flux_noise[k]))/len(k) for k in keys ])
+
+        self.smoothed_data = np.c_[wavelength, smoothed_flux, smoothed_noise]
+
+        return None
 
 
 
