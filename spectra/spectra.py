@@ -7,6 +7,7 @@ from astropy.table import Table
 import matplotlib.pyplot as plt
 from colossus.cosmology import cosmology
 from astropy import constants as const
+import more_itertools as mit
 
 class spec(object):
     """Spectrum class with some useful methods.
@@ -63,6 +64,7 @@ class spec(object):
         self._speed_of_light_kms_ = const.c.to_value(u.km/u.s)
 
         self._compute_smoothed_spectra_()
+        self._compute_dark_gaps_()
 
     def comoving_extent(self, wavelength_lower, wavelength_upper, lyman='Lyalpha'):
         """Returns the comoving extent between wavelength_lower and wavelength_upper.
@@ -129,7 +131,42 @@ class spec(object):
 
         return None
 
+    def _compute_dark_gaps_(self, n=3, vel_extent=100):
+        """Computes all dark gaps in the spectra.
 
+        Assumes that dark gaps are all pixels in the spectra with smoothed_flux < n * smoothed_sigma
+        Min_extent is the minimum velocity offset for each gap.
+
+        Args:
+            n (:obj:`float`, optional): dark gap criteria (default: 3)
+            vel_extent (:obj:`float`, optional): min velocity offset to be considered dark gap [km/s] (default: 1)
+        """
+        wavelength = self.data[:,0]
+        flux = self.data[:,1]
+        noise = self.data[:,2]
+
+        smoothed_wavelength = self.smoothed_data[:,0]
+        smoothed_flux = self.smoothed_data[:,1]
+        smoothed_noise = self.smoothed_data[:,2]
+
+        dark_keys = np.where(np.less(smoothed_flux, n * smoothed_noise))[0]
+
+        dark_gaps = [list(group) for group in mit.consecutive_groups(dark_keys)]
+        wavelength_lower = np.array( [smoothed_wavelength[gap[0]] for gap in dark_gaps] )
+        wavelength_upper = np.array( [smoothed_wavelength[gap[-1]] for gap in dark_gaps] )
+        velocity_offset = self.velocity_offset(wavelength_lower, wavelength_upper)
+        gap_bool = np.greater(velocity_offset, vel_extent)
+
+        self.dark_gaps = [gap for gap,b in zip(dark_gaps, gap_bool) if b]
+        self.dark_gaps_wavelength = [wavelength[gap] for gap in self.dark_gaps]
+        self.dark_gaps_flux = [flux[gap] for gap in self.dark_gaps]
+        self.dark_gaps_noise = [noise[gap] for gap in self.dark_gaps]
+
+        wavelength_lower = np.array( [wavelength[gap[0]] for gap in self.dark_gaps] )
+        wavelength_upper = np.array( [wavelength[gap[-1]] for gap in self.dark_gaps] )
+        self.dark_gaps_velocity_offset = self.velocity_offset(wavelength_lower, wavelength_upper)
+
+        return None
 
     def plot(self, show=True):
         fig, ax = plt.subplots(1, 1)
