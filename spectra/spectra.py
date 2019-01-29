@@ -6,6 +6,7 @@ from astropy.table import Table
 
 import matplotlib.pyplot as plt
 from colossus.cosmology import cosmology
+from astropy import constants as const
 
 class spec(object):
     """Spectrum class with some useful methods.
@@ -58,6 +59,8 @@ class spec(object):
             self.cosmo = cosmo
         else:
             self.cosmo = cosmology.setCosmology('planck18')
+
+        self._speed_of_light_kms_ = const.c.to_value(u.km/u.s)
 
     def comoving_extent(self, wavelength_lower, wavelength_upper, lyman='Lyalpha'):
         """Returns the comoving extent between wavelength_lower and wavelength_upper.
