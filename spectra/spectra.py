@@ -262,6 +262,24 @@ class spec(object):
 
         return these_gaps_alpha, these_gaps_beta
 
+    def convert_gap_to_redshift(self, gap, line):
+        """Returns the redshift of a gap at which it was in resonance with line.
+
+        Args:
+            gap (:obj:`list` of :obj:`int`): list of integers corresponding to data keys of gap
+            line (:obj:`str`): line which to compute ('Lyalpha', 'Lybeta', or 'Lygammma')
+        """
+        try:
+            line_wave = self.lymanseries[line]
+        except:
+            raise Exception('cant recognize line:', line)
+
+        wavelength = self.data[:,0] / (1+self.redshift) # want emitted redshift
+        wave = wavelength[gap]
+
+        z = (wave / line_wave) * (1 + self.redshift) - 1
+        return z
+
     def plot(self, show=True):
         fig, ax = plt.subplots(1, 1)
         ax.plot(self.data[:,0], self.data[:,1], lw=0.2)
