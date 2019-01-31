@@ -219,6 +219,49 @@ class spec(object):
 
         return these_gaps
 
+    def get_dark_gaps_in_alpha_and_beta(self, alpha_vel_extent, beta_vel_extent):
+        """Returns all dark gaps that are dark in both lyman alpha and lyman beta.
+
+        Args:
+            alpha_vel_extent (:obj:`float`): minimum velocity extent of lyman alpha dark gaps [km/s]
+            beta_vel_extent (:obj:`float`): minimum velocity extent of lyman beta dark gaps [km/s]
+        """
+
+        wavelength = self.data[:,0]
+        wavelength_emitted = np.divide(wavelength, 1+self.redshift)
+
+        lyalpha = self.lymanseries['Lyalpha']
+        lybeta = self.lymanseries['Lybeta']
+
+        # first gather all dark gaps
+        lymanalpha_gaps = self.get_dark_gaps_extent(alpha_vel_extent, alpha_only=True)
+        lymanbeta_gaps = self.get_dark_gaps_extent(beta_vel_extent, beta_only=True)
+
+        # (lambdae/lambdao) * ( 1 + ze) - 1
+        # determine the redshift at which each wavelength in each gap was at emission wavelength
+        lymanalpha_gaps_wavelength = [ wavelength_emitted[gap] for gap in lymanalpha_gaps ]
+        lymanbeta_gaps_wavelength = [ wavelength_emitted[gap] for gap in lymanbeta_gaps ]
+
+        lymanalpha_gaps_z = [ np.divide(w, lyalpha) * (1+self.redshift) - 1 
+                              for w in lymanalpha_gaps_wavelength]
+        lymanbeta_gaps_z = [ np.divide(w, lybeta) * (1+self.redshift) - 1 
+                              for w in lymanbeta_gaps_wavelength]
+
+        lymanalpha_gaps_zextent = [[z[0], z[-1]] for z in lymanalpha_gaps_z]
+        lymanbeta_gaps_zextent = [[z[0], z[-1]] for z in lymanbeta_gaps_z]
+
+        # now, require that the entire lyman alpha gap is in lyman beta
+        these_gaps_alpha = []
+        these_gaps_beta = []
+        for zextent, gap_alpha in zip(lymanalpha_gaps_zextent, lymanalpha_gaps):
+            for zextent_beta, gap_beta in zip(lymanbeta_gaps_zextent, lymanbeta_gaps):
+                if zextent[0] > zextent_beta[0] and zextent[1] < zextent_beta[1]:
+                    these_gaps_alpha.append(gap_alpha)
+                    these_gaps_beta.append(gap_beta)
+                    continue
+
+        return these_gaps_alpha, these_gaps_beta
+
     def plot(self, show=True):
         fig, ax = plt.subplots(1, 1)
         ax.plot(self.data[:,0], self.data[:,1], lw=0.2)
@@ -237,4 +280,4 @@ if __name__ == '__main__':
     invar = np.genfromtxt('../data/QUASAR_spec_FAN/z541.var.tex')[:,1]
     noise = 1/np.sqrt(invar)
     s = spec(dat[:,0], dat[:,1], noise, z, logwavelength=True)
-    long_Lyalpha_gaps = s.get_dark_gaps_extent(500, alpha_only=True)
+    Lyalpha_gaps, Lybeta_gaps = s.get_dark_gaps_in_alpha_and_beta(100, 500)
