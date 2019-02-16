@@ -306,7 +306,7 @@ class spec(object):
 
 
 if __name__ == '__main__':
-    fname = '../data/QUASAR_spec_FAN/z582.npy'
+    fname = '../data/QUASAR_spec_FAN/z521.npy'
     z, wv, sig, nse = read_spectrum(fname)
     s = spec(wv, sig, nse, z, logwavelength=False)
     Lyalpha_gaps, Lybeta_gaps = s.get_dark_gaps_in_alpha_and_beta(100, 500)
