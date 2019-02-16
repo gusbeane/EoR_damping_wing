@@ -306,9 +306,7 @@ class spec(object):
 
 
 if __name__ == '__main__':
-    z = 5.41
-    dat = np.genfromtxt('../data/QUASAR_spec_FAN/z541.spec.tex')
-    invar = np.genfromtxt('../data/QUASAR_spec_FAN/z541.var.tex')[:,1]
-    noise = 1/np.sqrt(invar)
-    s = spec(dat[:,0], dat[:,1], noise, z, logwavelength=True)
+    fname = '../data/QUASAR_spec_FAN/z582.npy'
+    z, wv, sig, nse = read_spectrum(fname)
+    s = spec(wv, sig, nse, z, logwavelength=False)
     Lyalpha_gaps, Lybeta_gaps = s.get_dark_gaps_in_alpha_and_beta(100, 500)
