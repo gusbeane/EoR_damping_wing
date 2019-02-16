@@ -138,7 +138,7 @@ class spec(object):
         keys = [np.where(l)[0] for l in limbool]
 
         smoothed_flux = np.array([ np.mean(flux[k]) for k in keys ])
-        smoothed_noise = np.array([ np.sum(np.square(flux_noise[k]))/len(k) for k in keys ])
+        smoothed_noise = np.sqrt(np.array([ np.sum(np.square(flux_noise[k]))/len(k) for k in keys ]))
 
         self.smoothed_data = np.c_[wavelength, smoothed_flux, smoothed_noise]
 
