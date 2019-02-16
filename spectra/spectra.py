@@ -9,6 +9,19 @@ from colossus.cosmology import cosmology
 from astropy import constants as const
 import more_itertools as mit
 
+def read_spectrum(fname):
+    """Function which reads in file name and returns spectra
+
+    Returns z, wavelength, signal, noise
+
+    Args:
+        fname (:obj:`str`): file name where spectrum is stored
+    """
+    t = np.load(fname)
+    data = t.item().get('data')
+    redshift = t.item().get('redshift')
+    return redshift, data[:,0], data[:,1], data[:,2]
+
 class spec(object):
     """Spectrum class with some useful methods.
 
