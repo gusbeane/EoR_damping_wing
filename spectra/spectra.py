@@ -30,15 +30,17 @@ class spec(object):
         attr2 (:obj:`int`, optional): Description of `attr2`.
 
     """
-    def __init__(self, wavelength, flux, flux_noise, redshift, continuum=None, logwavelength=False, cosmo=None):
+    def __init__(self, wavelength, flux, flux_noise, redshift, wavelength_continuum=None, flux_continuum=None
+                 logwavelength=False, cosmo=None):
         """Initialize the spectrum object.
 
         Args:
-            wavelength (:obj:`list` of :obj:`float`): Array of wavelength with astropy units
+            wavelength (:obj:`list` of :obj:`float`): Array of wavelength (angstrom)
             flux (:obj:`list` of :obj:`float`): Array of flux (units unnecessary)
             flux_noise (:obj:`list` of :obj:`float`): Array of flux noise (units unnecessary)
             redshift (:obj:`float`): Redshift of emission for the quasar
-            continuum (:obj:`list` of :obj:`float`, optional): Array of continuum values (same units as flux)
+            wavelength_continuum (:obj:`list` of :obj:`float`, optional): Array of continuum wavelengths (angstrom)
+            flux_continuum (:obj:`list` of :obj:`float`, optional): Array of continuum fluxes (arbitrary units)
             logwavelength(:obj:`bool`, optional): If wavelength column is log10(wavelength) (default: False)
             cosmo(colossus cosmo object, optional): Cosmology object from colossus (default: 'planck18')
         """
@@ -56,12 +58,12 @@ class spec(object):
             print('Redshift:', redshift, ' cant be cast to a float')
             sys.exit(-1)
 
-        if continuum is not None:
+        if wavelength_continuum is not None and flux_continuum is not None:
             self.has_continuum = True
-            if len(continuum) != len(wavelength):
-                print('Continuum is not same shape as wavelength column')
+            if len(wavelength_continuum) != len(flux_continuum):
+                print('Continuum wavelength is not same shape as continuum flux')
                 sys.exit(-1)
-            self.continuum = continuum
+            self.continuum_data = np.c_[wavelength_continuum, flux_continuum]
         else:
             self.has_continuum = False
 
