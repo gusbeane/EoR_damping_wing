@@ -9,6 +9,8 @@ from colossus.cosmology import cosmology
 from astropy import constants as const
 import more_itertools as mit
 
+from scipy.interpolate import interp1d
+
 def read_spectrum(fname):
     """Function which reads in file name and returns spectra
 
@@ -30,7 +32,7 @@ class spec(object):
         attr2 (:obj:`int`, optional): Description of `attr2`.
 
     """
-    def __init__(self, wavelength, flux, flux_noise, redshift, wavelength_continuum=None, flux_continuum=None
+    def __init__(self, wavelength, flux, flux_noise, redshift, wavelength_continuum=None, flux_continuum=None,
                  logwavelength=False, cosmo=None):
         """Initialize the spectrum object.
 
@@ -66,6 +68,9 @@ class spec(object):
             self.continuum_data = np.c_[wavelength_continuum, flux_continuum]
         else:
             self.has_continuum = False
+
+        if self.has_continuum:
+            self._calibrate_continuum_()
 
         self.lymanseries = {'Lyalpha': 1215.67,
                             'Lybeta': 1025.73,
@@ -306,9 +311,56 @@ class spec(object):
         else:
             return fig, ax
 
+    def _calibrate_continuum_(self, lambda_min=1350, lambda_max=1380):
+        # takes in 
+
+        # first compute the rest frame wavelength of spectrum
+        rf_wv = self.data[:,0]/(1.+self.redshift)
+        flux = self.data[:,1]
+        flux_noise = self.data[:,2]
+
+        c_wv = self.continuum_data[:,0]
+        c_flux = self.continuum_data[:,1]
+
+        c_interp = interp1d(c_wv, c_flux, fill_value=0, bounds_error=False)
+        
+        # check to make sure we got the goods
+        if np.max(rf_wv) < lambda_max or np.min(rf_wv) > lambda_min:
+            raise Exception('specified lambda_min:'+str(lambda_min)+\
+                ' and lambda_max:'+str(lambda_max)+'are not within spectrums bounds')
+
+        # now normalize
+        keys = np.where(np.logical_and(rf_wv > lambda_min, rf_wv < lambda_max))[0]
+        ckeys = np.where(np.logical_and(c_wv > lambda_min, c_wv < lambda_max))[0]
+
+        # grab the mean flux in our spectrum from 
+        flux_k = flux[keys]
+        flux_noise_k = flux_noise[keys]
+        weights = np.divide(1., np.square(flux_noise_k))
+        weights = np.divide(weights, np.sum(weights))
+        mean_flux = np.sum(np.multiply(flux_k, weights))
+
+        # grab the mean flux from continuum
+        c_flux_k = c_flux[keys]
+        mean_c_flux = np.mean(c_flux_k)
+
+        to_multiply = mean_c_flux/mean_flux
+        self.data_cnormalized = self.data.copy()
+        self.data_cnormalized[:,1] *= to_multiply
+        self.data_cnormalized[:,2] *= to_multiply
+        self.data_cnormalized[:,1] /= c_interp(rf_wv)
+        self.data_cnormalized[:,2] /= c_interp(rf_wv)
+        return None
+
 
 if __name__ == '__main__':
-    fname = '../data/QUASAR_spec_FAN/z521.npy'
+    fname = '../data/QUASAR_spec_FAN/z582.npy'
     z, wv, sig, nse = read_spectrum(fname)
-    s = spec(wv, sig, nse, z, logwavelength=False)
+
+    cname = '../data/QUASAR_spec_FAN/LBQS.lis'
+    t = np.genfromtxt(cname)
+    c_wv = t[:,0]
+    c_flux = t[:,1]
+
+    s = spec(wv, sig, nse, z, c_wv, c_flux, logwavelength=False)
     Lyalpha_gaps, Lybeta_gaps = s.get_dark_gaps_in_alpha_and_beta(100, 500)
