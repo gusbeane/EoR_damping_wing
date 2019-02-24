@@ -1,4 +1,4 @@
 #!/bin/bash
 
-export PYTHONPATH=`pwd`:${PYTHONPATH}
+export PYTHONPATH='/Users/abeane/scratch/EoR_damping_wing':${PYTHONPATH}
 
