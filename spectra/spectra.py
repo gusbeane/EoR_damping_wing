@@ -345,11 +345,15 @@ class spec(object):
         mean_c_flux = np.mean(c_flux_k)
 
         to_multiply = mean_c_flux/mean_flux
-        self.data_cnormalized = self.data.copy()
-        self.data_cnormalized[:,1] *= to_multiply
-        self.data_cnormalized[:,2] *= to_multiply
+        
+        self.data_cmatched = self.data.copy()
+        self.data_cmatched[:,1] *= to_multiply
+        self.data_cmatched[:,2] *= to_multiply
+
+        self.data_cnormalized = self.data_cmatched.copy()
         self.data_cnormalized[:,1] /= c_interp(rf_wv)
         self.data_cnormalized[:,2] /= c_interp(rf_wv)
+
         return None
 
 
